@@ -1,11 +1,15 @@
 "use client";
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -22,9 +26,8 @@ export default function LoginPage() {
       setError(data.error || "Login failed");
       return;
     }
-    localStorage.setItem("token", data.token);
-    alert("Login successful!");
-    // Optionally redirect or update UI
+    login(data.token, data.user);
+    router.push("/");
   }
 
   return (
