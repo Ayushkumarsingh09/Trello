@@ -29,9 +29,9 @@ export default function KanbanList({
       className="flex flex-col"
     >
       <h3 className="font-bold text-lg mb-2">{list.name}</h3>
-      <SortableContext items={list.cards.map((c: any) => c.id)}>
+      <SortableContext items={list.cards?.map((c: any) => c.id) || []}>
         <div className="flex flex-col gap-2">
-          {list.cards.map((card: any, cardIdx: number) => (
+          {list.cards?.map((card: any, cardIdx: number) => (
             <KanbanCard
               key={card.id}
               card={card}

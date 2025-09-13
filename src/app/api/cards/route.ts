@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { verifyListAccess, getCardPosition, createCard } from '../../../lib/database';
 
-const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 // Get user ID from token
@@ -34,34 +33,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify the user has access to the list through the board
-    const list = await prisma.list.findFirst({
-      where: { 
-        id: listId,
-        board: { ownerId: userId }
-      }
-    });
-
-    if (!list) {
+    const hasAccess = await verifyListAccess(listId, userId);
+    if (!hasAccess) {
       return NextResponse.json({ error: 'List not found or access denied' }, { status: 404 });
     }
 
     // Get the highest position in the list
-    const lastCard = await prisma.card.findFirst({
-      where: { listId },
-      orderBy: { position: 'desc' }
-    });
+    const lastPosition = await getCardPosition(listId);
+    const position = lastPosition + 1;
 
-    const position = lastCard ? lastCard.position + 1 : 0;
-
-    const card = await prisma.card.create({
-      data: {
-        title,
-        description: description || null,
-        listId,
-        position
-      }
-    });
-
+    const card = await createCard(title, listId, position, description);
     return NextResponse.json({ card });
   } catch (error) {
     console.error('Error creating card:', error);

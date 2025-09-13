@@ -7,11 +7,11 @@ import { useRouter } from 'next/navigation';
 interface Board {
   id: string;
   name: string;
-  createdAt: string;
-  lists: Array<{
+  created_at: string;
+  lists?: Array<{
     id: string;
     name: string;
-    cards: Array<{
+    cards?: Array<{
       id: string;
       title: string;
     }>;
@@ -44,6 +44,7 @@ export default function HomePage() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Boards data from Supabase:', data.boards);
         setBoards(data.boards);
       }
     } catch (error) {
@@ -201,10 +202,10 @@ export default function HomePage() {
                     {board.name}
                   </h3>
                   <div className="text-sm text-gray-500 mb-4">
-                    {board.lists.length} lists • {board.lists.reduce((acc, list) => acc + list.cards.length, 0)} cards
+                    {board.lists?.length || 0} lists • {board.lists?.reduce((acc, list) => acc + (list.cards?.length || 0), 0) || 0} cards
                   </div>
                   <div className="text-xs text-gray-400">
-                    Created {new Date(board.createdAt).toLocaleDateString()}
+                    Created {new Date(board.created_at).toLocaleDateString()}
                   </div>
                 </div>
               </div>

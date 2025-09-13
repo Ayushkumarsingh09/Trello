@@ -25,13 +25,13 @@ interface List {
   id: string;
   name: string;
   position: number;
-  cards: Card[];
+  cards?: Card[];
 }
 
 interface Board {
   id: string;
   name: string;
-  lists: List[];
+  lists?: List[];
 }
 
 export default function BoardPage() {
@@ -87,13 +87,13 @@ export default function BoardPage() {
       cardIdx = -1,
       destCardIdx = -1;
 
-    board.lists.forEach((list, i) => {
-      const idx = list.cards.findIndex((c: Card) => c.id === active.id);
+    board.lists?.forEach((list, i) => {
+      const idx = list.cards?.findIndex((c: Card) => c.id === active.id) ?? -1;
       if (idx !== -1) {
         sourceListIdx = i;
         cardIdx = idx;
       }
-      const destIdx = list.cards.findIndex((c: Card) => c.id === over.id);
+      const destIdx = list.cards?.findIndex((c: Card) => c.id === over.id) ?? -1;
       if (destIdx !== -1) {
         destListIdx = i;
         destCardIdx = destIdx;
@@ -104,13 +104,18 @@ export default function BoardPage() {
     if (destListIdx === -1 || destCardIdx === -1) return;
     if (sourceListIdx === destListIdx && cardIdx === destCardIdx) return;
 
-    const card = board.lists[sourceListIdx].cards[cardIdx];
-    const newLists = board.lists.map((l, i) =>
+    const card = board.lists?.[sourceListIdx]?.cards?.[cardIdx];
+    if (!card) return;
+    
+    const newLists = board.lists?.map((l, i) =>
       i === sourceListIdx
-        ? { ...l, cards: l.cards.filter((c: Card) => c.id !== active.id) }
+        ? { ...l, cards: l.cards?.filter((c: Card) => c.id !== active.id) || [] }
         : l
-    );
-    newLists[destListIdx].cards.splice(destCardIdx, 0, card);
+    ) || [];
+    
+    if (newLists[destListIdx]?.cards) {
+      newLists[destListIdx].cards!.splice(destCardIdx, 0, card);
+    }
 
     setBoard({ ...board, lists: newLists });
 
@@ -135,7 +140,7 @@ export default function BoardPage() {
         const data = await response.json();
         setBoard({
           ...board,
-          lists: [...board.lists, data.list]
+          lists: [...(board.lists || []), data.list]
         });
       }
     } catch (error) {
@@ -161,11 +166,11 @@ export default function BoardPage() {
         const data = await response.json();
         setBoard({
           ...board,
-          lists: board.lists.map(list =>
+          lists: board.lists?.map(list =>
             list.id === listId
-              ? { ...list, cards: [...list.cards, data.card] }
+              ? { ...list, cards: [...(list.cards || []), data.card] }
               : list
-          )
+          ) || []
         });
       }
     } catch (error) {
@@ -233,7 +238,7 @@ export default function BoardPage() {
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          {board.lists.map((list, idx) => (
+          {board.lists?.map((list, idx) => (
             <KanbanList
               key={list.id}
               list={list}

@@ -11,12 +11,10 @@
   "dependencies": {
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@prisma/client": "^6.16.1",
+    "@supabase/supabase-js": "^2.57.4",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
     "next": "15.5.3",
-    "pg": "^8.16.3",
-    "prisma": "^6.16.1",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

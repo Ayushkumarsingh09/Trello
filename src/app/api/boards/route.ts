@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { getBoardsByOwner, createBoard, getOrganizationByOwner, createOrganization } from '../../../lib/database';
 
-const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 // Get user ID from token
@@ -27,18 +26,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const boards = await prisma.board.findMany({
-      where: { ownerId: userId },
-      include: {
-        lists: {
-          include: {
-            cards: true
-          }
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
-
+    const boards = await getBoardsByOwner(userId);
     return NextResponse.json({ boards });
   } catch (error) {
     console.error('Error fetching boards:', error);
@@ -63,34 +51,17 @@ export async function POST(req: NextRequest) {
     // For now, we'll create a default organization for the user if none exists
     let orgId = organizationId;
     if (!orgId) {
-      const existingOrg = await prisma.organization.findFirst({
-        where: { ownerId: userId }
-      });
+      const existingOrg = await getOrganizationByOwner(userId);
       
       if (existingOrg) {
         orgId = existingOrg.id;
       } else {
-        const newOrg = await prisma.organization.create({
-          data: {
-            name: `${userId}'s Organization`,
-            ownerId: userId
-          }
-        });
+        const newOrg = await createOrganization(`${userId}'s Organization`, userId);
         orgId = newOrg.id;
       }
     }
 
-    const board = await prisma.board.create({
-      data: {
-        name,
-        organizationId: orgId,
-        ownerId: userId
-      },
-      include: {
-        lists: true
-      }
-    });
-
+    const board = await createBoard(name, orgId, userId);
     return NextResponse.json({ board });
   } catch (error) {
     console.error('Error creating board:', error);
