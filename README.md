@@ -2,6 +2,7 @@
 
 A modern, feature-rich Trello clone built with **Next.js 15**, **React 19**, **Supabase**, and **TypeScript**. This project demonstrates full-stack development skills with authentication, real-time updates, and drag-and-drop functionality.
 
+## HLD & LLD are inside docs folder
 ## ✨ Features
 
 - 🔐 **Secure Authentication** - JWT-based auth with bcrypt password hashing
