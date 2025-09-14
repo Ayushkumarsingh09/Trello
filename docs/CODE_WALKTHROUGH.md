@@ -1,7 +1,7 @@
 # 🔍 Code Walkthrough - Trello Clone
 
 This document provides a detailed code walkthrough of each file in the Trello clone project, perfect for interview preparation.
-
+  
 ## 📁 File-by-File Analysis
 
 ### 1. **Authentication System**
