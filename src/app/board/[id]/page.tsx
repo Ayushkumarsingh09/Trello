@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -9,6 +9,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import dynamic from "next/dynamic";
 
@@ -44,13 +45,7 @@ export default function BoardPage() {
 
   const sensors = useSensors(useSensor(PointerSensor));
 
-  useEffect(() => {
-    if (token && params.id) {
-      fetchBoard();
-    }
-  }, [token, params.id]);
-
-  const fetchBoard = async () => {
+  const fetchBoard = useCallback(async () => {
     try {
       const response = await fetch(`/api/boards`, {
         headers: {
@@ -76,9 +71,15 @@ export default function BoardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, params.id]);
 
-  const handleDragEnd = async (event: any) => {
+  useEffect(() => {
+    if (token && params.id) {
+      fetchBoard();
+    }
+  }, [token, params.id, fetchBoard]);
+
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id || !board) return;
 
@@ -238,11 +239,10 @@ export default function BoardPage() {
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          {board.lists?.map((list, idx) => (
+          {board.lists?.map((list) => (
             <KanbanList
               key={list.id}
               list={list}
-              listIdx={idx}
               onAddCard={() => addCard(list.id)}
             />
           ))}

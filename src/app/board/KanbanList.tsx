@@ -4,13 +4,25 @@ import React from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 
+interface Card {
+  id: string;
+  title: string;
+  description?: string;
+  position: number;
+}
+
+interface List {
+  id: string;
+  name: string;
+  position: number;
+  cards?: Card[];
+}
+
 export default function KanbanList({
   list,
-  listIdx,
   onAddCard,
 }: {
-  list: any;
-  listIdx: number;
+  list: List;
   onAddCard?: () => void;
 }) {
   const { setNodeRef } = useDroppable({ id: list.id });
@@ -29,9 +41,9 @@ export default function KanbanList({
       className="flex flex-col"
     >
       <h3 className="font-bold text-lg mb-2">{list.name}</h3>
-      <SortableContext items={list.cards?.map((c: any) => c.id) || []}>
+      <SortableContext items={list.cards?.map((c: Card) => c.id) || []}>
         <div className="flex flex-col gap-2">
-          {list.cards?.map((card: any, cardIdx: number) => (
+          {list.cards?.map((card: Card, cardIdx: number) => (
             <KanbanCard
               key={card.id}
               card={card}
@@ -58,7 +70,7 @@ function KanbanCard({
   listId,
   cardIdx,
 }: {
-  card: any;
+  card: Card;
   listId: string;
   cardIdx: number;
 }) {

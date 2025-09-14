@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -27,13 +27,7 @@ export default function HomePage() {
   const [newBoardName, setNewBoardName] = useState('');
   const [creating, setCreating] = useState(false);
 
-  useEffect(() => {
-    if (token) {
-      fetchBoards();
-    }
-  }, [token]);
-
-  const fetchBoards = async () => {
+  const fetchBoards = useCallback(async () => {
     try {
       const response = await fetch('/api/boards', {
         headers: {
@@ -52,7 +46,13 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchBoards();
+    }
+  }, [token, fetchBoards]);
 
   const handleCreateBoard = async (e: React.FormEvent) => {
     e.preventDefault();
