@@ -202,6 +202,16 @@ npx tsc --noEmit
 npm run build
 ```
 
+## OUTPUT:
+<img width="1306" height="656" alt="image" src="https://github.com/user-attachments/assets/4d6835f5-5511-40d0-a3d5-c39b50f671d6" />
+<img width="1327" height="670" alt="image" src="https://github.com/user-attachments/assets/0a1a61ec-1826-42d1-a0b5-4ec58478f9b1" />
+
+
+<img width="1654" height="747" alt="image" src="https://github.com/user-attachments/assets/461f0392-8274-42ba-b4af-a45dfff8a77e" />
+<img width="1350" height="806" alt="image" src="https://github.com/user-attachments/assets/5da95632-cac0-46e2-9764-1563c07d88bb" />
+
+
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -210,21 +220,3 @@ npm run build
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/) - The React framework
-- [Supabase](https://supabase.com/) - The backend platform
-- [Tailwind CSS](https://tailwindcss.com/) - The CSS framework
-- [@dnd-kit](https://dndkit.com/) - The drag-and-drop library
-
-## 📞 Contact
-
-For questions about this project, please open an issue or contact the maintainer.
-
----
-
-**Built with ❤️ using Next.js, React, and Supabase**
